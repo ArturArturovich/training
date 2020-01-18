@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" th:lang="${lang}" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<!--/*@thymesVar id="user" type="ru.offenso.entities.User"*/-->
+<!--/*@thymesVar id="profile" type="ru.offenso.entities.Profile"*/-->
+<!--/*@thymesVar id="lang" type="java.lang.String"*/-->
+<!--/*@thymesVar id="url" type="java.lang.String"*/-->
+<!--/*@thymesVar id="error" type="java.lang.String"*/-->
+
+<head>
+    <meta charset="utf-8"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title th:text="#{brand}">#{brand}</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" media="all" rel="stylesheet" th:href="@{/webjars/bootstrap/dist/css/bootstrap.min.css}" type="text/css"/>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" th:href="@{/webjars/font-awesome/css/font-awesome.css}" type="text/css"/>
+    <link media="all" rel="stylesheet" th:href="@{/webjars/bootstrap-select/dist/css/bootstrap-select.min.css}" type="text/css"/>
+    <link href="../../static/main.css" media="all" rel="stylesheet" th:href="@{/main.css}" type="text/css"/>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" th:src="@{/webjars/jquery/dist/jquery.min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" th:src="@{/webjars/popper.js/dist/umd/popper.js}"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/dist/js/bootstrap.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap-select/dist/js/bootstrap-select.min.js}"></script>
+    <script th:src="@{'/webjars/bootstrap-select/dist/js/i18n/defaults-'+ ${lang} + '_' + ${#strings.toUpperCase(lang)} + '.min.js'}"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" th:replace="header :: header">
+    <a class="navbar-brand" th:href="@{/}" th:text="#{brand}">#{brand}</a>
+    <button aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar-primary" data-toggle="collapse" type="button">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbar-primary">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<main role="main">
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../home.html" th:href="@{/}">Home</a></li>
+                <li aria-current="page" class="breadcrumb-item active" th:text="${user.username}">${user.username}</li>
+            </ol>
+        </nav>
+        <h1 th:text="${user.username}">${user.username}</h1>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="index.html" th:href="@{/user/}" th:text="#{view}">#{view}</a>
+            </li>
+        </ul>
+
+        <form method="post" role="form" th:action="@{${url}}">
+
+            <div class="form-group">
+                <label for="profile-secret" th:text="#{profile.secret.label}">#{profile.secret.label}</label>
+                <input class="form-control" id="profile-secret" th:field="${user.profile.secret}" type="text"/>
+            </div>
+
+            <button class="btn btn-primary" th:text="#{save}" type="submit">#{save}</button>
+        </form>
+        <hr/>
+        <form method="post" th:action="@{/user/password}">
+            <div class="form-group">
+                <label for="password-old" th:text="#{password.old}">#{password.old}</label>
+                <input id="password-old" name="old-password" placeholder="Password" required th:class="${error == 'old'} ? 'form-control is-invalid' : 'form-control '" type="password">
+                <div class="invalid-feedback" th:if="${error == 'old'}">Wrong old password</div>
+            </div>
+            <div class="form-group">
+                <label for="password-new" th:text="#{password.new}">#{password.new}</label>
+                <input id="password-new" name="new-password" placeholder="Password" required th:class="${error == 'new'} ? 'form-control is-invalid' : 'form-control '" type="password">
+                <div class="invalid-feedback" th:if="${error == 'new'}">Passwords doesn`t match</div>
+            </div>
+            <div class="form-group">
+                <label for="password-repeat" th:text="#{password.repeat}">#{password.repeat}</label>
+                <input id="password-repeat" name="new-password-repeat" placeholder="Password" required th:class="${error == 'new'} ? 'form-control is-invalid' : 'form-control '" type="password">
+                <div class="invalid-feedback" th:if="${error == 'new'}">Passwords doesn`t match</div>
+            </div>
+            <button class="btn btn-primary" th:text="#{save}" type="submit">#{save}</button>
+        </form>
+        <hr/>
+    </div><!-- /.container -->
+</main>
+<footer class="container" th:replace="footer :: footer">
+    <p>&copy; Footer</p>
+</footer>
+</body>
+</html>

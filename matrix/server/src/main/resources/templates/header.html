@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" th:lang="${lang}" xmlns="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" xmlns:th="http://www.thymeleaf.org">
+
+<!--/*@thymesVar id="lang" type="java.lang.String"*/-->
+<!--/*@thymesVar id="catalogs" type="java.util.List<ru.offenso.entities.Catalog>"*/-->
+
+<head>
+    <meta charset="utf-8"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title th:text="#{brand}">#{brand}</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" media="all" rel="stylesheet" th:href="@{/webjars/bootstrap/dist/css/bootstrap.min.css}" type="text/css"/>
+    <link href="../static/main.css" media="all" rel="stylesheet" th:href="@{/main.css}" type="text/css"/>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" th:src="@{/webjars/jquery/dist/jquery.min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" th:src="@{/webjars/popper.js/dist/umd/popper.js}"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/dist/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" th:fragment="header">
+    <a class="navbar-brand" th:href="@{/}">
+        <span th:text="#{brand}">#{brand}</span>
+    </a>
+    <button aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar-primary" data-toggle="collapse" type="button">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbar-primary">
+        <ul class="navbar-nav mr-auto">
+            <th:block th:if="${#httpServletRequest.remoteUser} != null">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/nodes}">Метаполя</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" th:href="@{/catalogs}">Справочники</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" th:each="model:${catalogs}" th:href="@{/catalogs/{id}(id=${model.id})}" th:text="${model.title}">${model.title}</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown" th:if="${#authorization.expression('hasAnyAuthority(''administer forms'', ''administer catalogs'', ''administer reports'', ''administer functions'')')}">
+                    <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button">Сервисы</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" th:if="${#authorization.expression('hasAuthority(''administer forms'')')}" th:href="@{/forms}">Администрирование форм</a>
+                        <a class="dropdown-item" th:if="${#authorization.expression('hasAuthority(''administer catalogs'')')}" th:href="@{/catalogs}">Администрирование справочников</a>
+                        <a class="dropdown-item" th:if="${#authorization.expression('hasAuthority(''administer reports'')')}" th:href="@{/reports}">Отчеты</a>
+                        <a class="dropdown-item" th:if="${#authorization.expression('hasAuthority(''administer functions'')')}" th:href="@{/function-sets}">Наборы функций</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown" th:if="${#authorization.expression('hasAuthority(''administer archive'')')}">
+                    <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" th:href="@{/archive}" th:text="#{archives}">#{archives}</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" th:href="@{/archive/activities}" th:text="#{archive.activities}">#{archive.activities}</a>
+                        <a class="dropdown-item" th:href="@{/archive/reports}" th:text="#{archive.reports}">#{archive.reports}</a>
+                    </div>
+                </li>
+            </th:block>
+            <th:block th:each="i: ${@menuService.renderMenu(#httpServletRequest.requestURI, #locale)}">
+                <th:block th:if="${i.value.children.isEmpty() == true}">
+                    <li class="nav-item active" th:if="${i.value.active}">
+                        <a class="nav-link" th:href="@{${i.value.url}}">
+                            <span th:text="${i.value.title}">${i.value.title}</span>
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" th:if="${!i.value.active}">
+                        <a class="nav-link" th:href="@{${i.value.url}}" th:text="${i.value.title}">${i.value.title}</a>
+                    </li>
+                </th:block>
+                <li class="nav-item dropdown" th:if="${i.value.children.isEmpty() == false}">
+                    <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" th:href="@{${i.value.url}}" th:text="${i.value.title}">#{i.value.title}</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" th:each="i2 : ${i.value.children}" th:href="@{${i2.value.url}}" th:text="${i2.value.title}">${i2.value.title}</a>
+                    </div>
+                </li>
+
+            </th:block>
+
+            <li class="nav-item" th:if="${#httpServletRequest.remoteUser} == null">
+                <a class="nav-link" th:href="@{/login}" th:text="#{login}">#{login}</a>
+            </li>
+            <li class="nav-item dropdown" th:if="${#httpServletRequest.remoteUser} != null">
+                <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="navbarUser"> <i
+                        class="fa fa-user"></i> </a>
+                <div aria-labelledby="navbarUser" class="dropdown-menu">
+                    <a class="dropdown-item" th:href="@{/user}" th:text="#{profile}">#{profile}</a>
+                    <div class="dropdown-divider"></div>
+                    <form method="post" th:action="@{/logout}">
+                        <input class="btn btn-link dropdown-item" th:value="#{logout}" type="submit" value="#{logout}"/>
+                    </form>
+                </div>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0" id="command-form" sec:authorize="hasAnyAuthority('search')" th:action="@{/search}">
+            <div class="dropdown">
+                <div class="input-group">
+                    <input aria-label="Search" autocomplete="false" class="form-control" id="command-search" name="q" placeholder="Command" type="text">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-success my-2 my-sm-0" th:text="#{search}" type="submit">#{search}</button>
+                    </div>
+                </div>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">New around here? Sign up</a>
+                    <button class="dropdown-item" type="button">Something else here</button>
+                </div>
+            </div>
+        </form>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            let devicesLabel = /*[[#{devices}]]*/ "Devices";
+
+            (() => {
+                let showResult = (q) => fetch(`/api/v1/search?q=${q}`).then((result) => result.json()).then(v => {
+                    let html = v["devices"].map(d => `<a class="dropdown-item" href="${d.url}">${d.title}</a>`);
+                    let ddMenu = $(".dropdown-menu");
+                    ddMenu.html(html);
+                    ddMenu.dropdown("toggle");
+                }).catch(e => {
+                    console.log(e);
+                });
+
+                let cmdSearch = $("#command-search");
+                cmdSearch.keyup(() => showResult(cmdSearch.val()));
+                cmdSearch.change(() => showResult(cmdSearch.val()));
+            })();
+
+            /*]]>*/
+        </script>
+    </div>
+</nav>
+</body>
+</html>

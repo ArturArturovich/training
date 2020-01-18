@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" th:lang="${lang}" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<!--/*@thymesVar id="models" type="java.lang.Iterable<ru.offenso.entities.User>"*/-->
+<!--/*@thymesVar id="lang" type="java.lang.String"*/-->
+
+<head>
+    <meta charset="utf-8"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title th:text="#{brand}">#{brand}</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" media="all" rel="stylesheet" th:href="@{/webjars/bootstrap/dist/css/bootstrap.min.css}" type="text/css"/>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" th:href="@{/webjars/font-awesome/css/font-awesome.css}" type="text/css"/>
+    <link media="all" rel="stylesheet" th:href="@{/webjars/bootstrap-select/dist/css/bootstrap-select.min.css}" type="text/css"/>
+    <link href="../../../static/main.css" media="all" rel="stylesheet" th:href="@{/main.css}" type="text/css"/>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" th:src="@{/webjars/jquery/dist/jquery.min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" th:src="@{/webjars/popper.js/dist/umd/popper.js}"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/dist/js/bootstrap.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap-select/dist/js/bootstrap-select.min.js}"></script>
+    <script th:src="@{'/webjars/bootstrap-select/dist/js/i18n/defaults-'+ ${lang} + '_' + ${#strings.toUpperCase(lang)} + '.min.js'}"></script>
+    <script src="../../../static/table-sortable.js" th:src="@{/table-sortable.js}"></script>
+    <script src="../../../static/table-filtered.js" th:src="@{/table-filtered.js}"></script>
+    <script src="../../../static/table-exportable.js" th:src="@{/table-exportable.js}"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" th:replace="header :: header">
+    <a class="navbar-brand" th:href="@{/}" th:text="#{brand}">#{brand}</a>
+    <button aria-controls="navbar-primary" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar-primary" data-toggle="collapse" type="button">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbar-primary">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<main role="main">
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../../home.html" th:href="@{/}">Home</a></li>
+                <li aria-current="page" class="breadcrumb-item active" th:text="#{users}">#{users}</li>
+            </ol>
+        </nav>
+        <h1 th:text="#{users}">Users</h1>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="list.html" th:href="@{/admin/users}" th:text="#{list}">#{list}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="create.html" th:href="@{/admin/users/create}" th:text="#{create}">#{create}</a>
+            </li>
+        </ul>
+        <div class="table-responsive">
+            <table class="table table-striped table-sortable table-exportable table-filtered">
+                <thead>
+                <tr>
+                    <th th:text="#{id}">#{id}</th>
+                    <th th:text="#{user.username.label}">#{user.username.label}</th>
+                    <th th:text="#{user.email.label}">#{user.email.label}</th>
+                    <th th:text="#{user.enabled.label}">#{user.enabled.label}</th>
+                    <th th:text="#{roles}">#{roles}</th>
+                    <th:block th:if="${#authorization.expression('hasAuthority(''audit'')')}">
+                        <th th:text="#{createdBy}">#{createdBy}</th>
+                        <th th:text="#{createdAt}">#{createdAt}</th>
+                        <th th:text="#{updatedBy}">#{updatedBy}</th>
+                        <th th:text="#{updatedAt}">#{updatedAt}</th>
+                    </th:block>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="model : ${models}">
+                    <td th:text="${model.id}">${model.id}</td>
+                    <td><a href="view.html" th:href="@{/admin/users/{id}(id=${model.id})}" th:text="${model.username}">${model.username}</a></td>
+                    <td th:text="${model.email}">${model.email}</td>
+                    <td th:text="${model.enabled}">${model.enabled}</td>
+                    <td th:text="${model.roles}">${model.roles}</td>
+                    <th:block th:if="${#authorization.expression('hasAuthority(''audit'')')}">
+                        <td><a href="view.html" th:href="@{/admin/users/{id}(id=${model.createdBy.id})}" th:text="${model.createdBy.username}">${model.createdBy.username}</a></td>
+                        <td th:attr="data-value=${model.createdAt}" th:text="${#temporals.format(model.createdAt,'dd.MM.yyyy HH:mm:ss')}">${model.createdAt}</td>
+                        <td><a href="view.html" th:href="@{/admin/users/{id}(id=${model.updatedBy.id})}" th:text="${model.updatedBy.username}">${model.updatedBy.username}</a></td>
+                        <td th:attr="data-value=${model.updatedAt}" th:text="${#temporals.format(model.updatedAt,'dd.MM.yyyy HH:mm:ss')}">${model.updatedAt}</td>
+                    </th:block>
+                    <td>
+                        <a class="btn btn-sm btn-primary btn-view" th:href="@{/admin/users/{id}(id=${model.id})}"><i aria-hidden="true" class="fa fa-eye"></i></a>
+                        <a class="btn btn-sm btn-primary btn-edit" th:href="@{/admin/users/{id}/edit(id=${model.id})}"><i aria-hidden="true" class="fa fa-pencil-square-o"></i></a>
+                        <a class="btn btn-sm btn-warning btn-delete" th:href="@{/admin/users/{id}/delete(id=${model.id})}"><i class="fa fa-trash-o"></i></a>
+                        <a class="btn btn-sm btn-secondary btn-edit" th:href="@{/impersonate(username=${model.username})}"><i class="fa fa-user-circle"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr/>
+    </div><!-- /.container -->
+</main>
+<footer class="container" th:replace="footer :: footer">
+    <p>&copy; Footer</p>
+</footer>
+</body>
+</html>

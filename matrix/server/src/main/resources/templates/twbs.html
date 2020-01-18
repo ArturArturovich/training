@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" th:lang="${lang}" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<!--/*@thymesVar id="lang" type="java.lang.String"*/-->
+<!--/*@thymesVar id="alias" type="ru.offenso.ui.FormGroupSelectAlias"*/-->
+<!--/*@thymesVar id="input" type="ru.offenso.ui.FormGroupInput"*/-->
+<!--/*@thymesVar id="file" type="ru.offenso.ui.FormGroupFile"*/-->
+<!--/*@thymesVar id="date" type="ru.offenso.ui.FormGroupDate"*/-->
+<!--/*@thymesVar id="checkbox" type="ru.offenso.ui.FormGroupCheckbox"*/-->
+<!--/*@thymesVar id="select" type="ru.offenso.ui.FormGroupSelect"*/-->
+<!--/*@thymesVar id="textarea" type="ru.offenso.ui.FormGroupTextarea"*/-->
+
+<head>
+    <meta charset="utf-8"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title th:text="#{brand}">#{brand}</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" media="all" rel="stylesheet" th:href="@{/webjars/bootstrap/dist/css/bootstrap.min.css}" type="text/css"/>
+    <link href="../static/main.css" media="all" rel="stylesheet" th:href="@{/main.css}" type="text/css"/>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" th:src="@{/webjars/jquery/dist/jquery.min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" th:src="@{/webjars/popper.js/dist/umd/popper.js}"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/dist/js/bootstrap.min.js}"></script>
+</head>
+<body>
+
+<th:block th:fragment="form-group-select-alias(alias)">
+    <div class="row">
+        <div th:class="${alias.usingAlias} ? 'col-md-6' : 'col-md-12'">
+            <div class="form-group">
+                <label for="select-alias" class="font-weight-bold" th:for="${alias.entity} + '-' + ${alias.name}" th:text="${alias.title}">${alias.title}</label>
+                <select data-style="vlink" class="form-control selectpicker" data-live-search="true" data-actions-box="true" id="select-alias" th:id="${alias.entity} + '-' + ${alias.name}" th:name="${alias.name}"
+                        th:required="${alias.required}" th:value="${alias.value}" th:multiple="${alias.multiple}">
+                    <option th:if="${!alias.required}" value=""></option>
+                        <option th:each="opt : ${alias.options}" th:selected="${!alias.value.isEmpty() && alias.value.contains(opt.key)}" th:text="${opt.value}" th:value="${opt.key}">${opt.value}</option>
+                </select>
+                <small class="form-text text-muted" th:id="${alias.entity} + '-' + ${alias.name} + '-help'" th:inline="text">[[${alias.help}]]</small>
+            </div>
+        </div>
+        <div class="col-md-6" th:if="${alias.usingAlias == true}">
+            <div class="form-group">
+                <label for="select-alias-alias" th:for="${alias.entity} + '-' + ${alias.name} + '-alias'" th:text="#{alias}">#{alias}</label>
+                <input class="form-control" id="select-alias-alias" th:id="${alias.entity} + '-' + ${alias.name} + '-alias'" th:name="${alias.name} + '-alias'" type="text" th:value="${alias.alias}"/>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="form-group-file(file)">
+    <div class="form-group">
+        <label for="file" class="font-weight-bold" th:for="${file.name}" th:text="${file.title}">${form.title}</label>
+        <input class="form-control" id="file" multiple th:attr="aria-describedby=${file.name} + '-help'" th:id="${file.name}"
+               th:name="${file.name}" th:placeholder="${file.placeholder}" th:required="${file.required}" th:type="${file.type}" th:value="${file.value}"/>
+        <small class="form-text text-muted" th:id="${file.name} + '-help'" th:text="${file.help}">${file.help}</small>
+    </div>
+
+    <div class="checkbox">
+        <input id="file-delete" th:id="${file.name} + '-delete'" th:name="${file.name} + '-delete'" type="checkbox"/>
+        <label for="file-delete" th:for="${file.name} + '-delete'" th:text="#{file.delete}">#{file.delete}</label>
+    </div>
+
+    <div class="form-group ml-3" hidden id="files-to-delete">
+        <small class="form-text mb-1" th:text="#{file.delete.help}">#{file.delete.help}</small>
+        <div class="checkbox" th:each="fileName, iter : ${file.value}">
+            <input id="file-delete-check" th:id="${iter.index} + '-delete-check'" th:name="${iter.index} + '-file-delete-check'" type="checkbox"/>
+            <label for="file-delete-check" th:for="${iter.index} + '-delete-check'" th:text="${fileName}">${fileName}</label>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        let checkBoxId = /*[[${file.name} + '-delete']]*/ '';
+        let filesToDelete = document.getElementById("files-to-delete");
+
+        document.getElementById(checkBoxId).addEventListener('change', function () {
+            console.log(this.checked);
+            filesToDelete.hidden = !this.checked;
+        });
+        /*]]>*/
+    </script>
+</th:block>
+
+<div class="field-group" th:fragment="form-group-date(date)">
+    <label for="field-date-value" class="font-weight-bold" th:for="${date.entity}+'-'+${date.name}+'-value'" th:text="${date.title}">${date.title}</label>
+    <div class="input-group date datepicker" data-target-input="nearest" id="field-date" th:id="${date.entity}+'-'+${date.name}">
+        <input class="form-control datetimepicker-input vlink" th:attr="data-target='#'+${date.entity}+'-'+${date.name}" id="field-date-value" th:id="${date.entity}+'-'+${date.name}+'-value'" th:value="${date.value}" th:required="${date.required}" th:name="${date.name}" th:placeholder="${date.placeholder}" type="text"/>
+        <div class="input-group-append">
+            <div class="input-group-text" th:attr="data-target='#'+${date.entity}+'-'+${date.name}" data-toggle="datetimepicker">
+                <i class="fa fa-calendar"></i>
+            </div>
+            <div class="input-group-text pointer-cursor" th:id="${date.entity}+'-'+${date.name}+'-clear'">
+                <i class="fa fa-times"></i>
+            </div>
+        </div>
+    </div>
+    <small class="form-text text-muted" th:id="${date.entity}+'-'+${date.name}+'-help'" th:text="${date.help}">${date.help}</small>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        function initDatePicker(name, initial, format, opt = {}) {
+            let $date = $(name);
+            if (!$(`${name}-value`)[0].disabled) {
+                $(`${name}-clear`).click((e) => {
+                    e.preventDefault();
+                    $date.datetimepicker("clear");
+                });
+            }
+            $date.datetimepicker({
+                date: initial !== 0 ? new Date(initial) : undefined,
+                ignoreReadonly: true,
+                format,
+                ...opt
+            });
+            return $date;
+        }
+        initDatePicker(/*[['#'+${date.entity}+'-'+${date.name}]]*/ "#field-date", /*[[${date.value != '' ? date.value : 0}]]*/ 0, /*[[${date.format}]]*/ "");
+        /*]]>*/
+    </script>
+</div>
+
+<div class="form-group" th:fragment="form-group-input(input)">
+    <label for="input" class="font-weight-bold" th:for="${input.entity} + '-' + ${input.name}" th:text="${input.title}">${input.title}</label>
+    <input class="form-control vlink" id="input" th:attr="aria-describedby=${input.entity} + '-' + ${input.name} + '-help'" th:id="${input.entity} + '-' + ${input.name}" th:name="${input.name}"
+           th:placeholder="${input.placeholder}" th:required="${input.required}" th:type="${input.type}" th:value="${input.value}"/>
+    <small class="form-text text-muted" th:id="${input.entity} + '-' + ${input.name} + '-help'" th:text="${input.help}">${input.help}</small>
+</div>
+
+<div class="form-group" th:fragment="form-group-textarea(textarea)">
+    <label for="textarea" class="font-weight-bold" th:for="${textarea.entity} + '-' + ${textarea.name}" th:text="${textarea.title}">${textarea.title}</label>
+    <textarea class="form-control vlink" id="textarea" th:attr="aria-describedby=${textarea.entity} + '-' + ${textarea.name} + '-help'" th:id="${textarea.entity} + '-' + ${textarea.name}"
+              th:name="${textarea.name}" th:placeholder="${textarea.placeholder}" th:rows="${textarea.rows}" th:text="${textarea.value}">${textarea.value}</textarea>
+    <small class="form-text text-muted" th:id="${textarea.entity} + '-' + ${textarea.name} + '-help'" th:text="${textarea.help}">${textarea.help}</small>
+</div>
+
+<div class="form-group" th:fragment="form-group-select(select)">
+    <label for="select" th:for="${select.entity} + '-' + ${select.name}" th:text="${select.title}">${select.title}</label>
+    <select class="form-control" id="select" th:id="${select.entity} + '-' + ${select.name}" th:name="${select.name}" th:required="${select.required}" th:value="${select.value}">
+        <option th:each="opt : ${select.options}" th:selected="${opt.key == #strings.toString(select.value)}" th:text="${opt.value}" th:value="${opt.key}">${opt.value}</option>
+    </select>
+    <small class="form-text text-muted" th:id="${select.entity} + '-' + ${select.name} + '-help'" th:inline="text">[[${select.help}]]</small>
+</div>
+
+<div class="checkbox" th:fragment="form-group-checkbox(checkbox)">
+    <input id="checkbox" th:id="${checkbox.entity} + '-' + ${checkbox.name}" th:name="${checkbox.name}" th:value="${checkbox.value}" type="checkbox" th:checked="${checkbox.value}"/>
+    <label for="checkbox" th:for="${checkbox.entity} + '-' + ${checkbox.name}" th:text="${checkbox.title}">${checkbox.title}</label>
+</div>
+</body>
+</html>

@@ -1,0 +1,108 @@
+body {
+    padding-top: 3.5rem;
+}
+
+.navbar .nav-link {
+    white-space: nowrap;
+}
+
+/*
+ * Sidebar
+ */
+
+.sidebar {
+    position: fixed;
+    top: 51px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 20px 0;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    border-right: 1px solid #eee;
+}
+
+.sidebar .nav {
+    margin-bottom: 20px;
+}
+
+.sidebar .nav-item {
+    width: 100%;
+}
+
+.sidebar .nav-item + .nav-item {
+    margin-left: 0;
+}
+
+.sidebar .nav-link {
+    border-radius: 0;
+}
+
+.vertical {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+}
+
+.oneline {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.hidden {
+    display: none;
+}
+
+.btn-delete i, .btn-edit i {
+    color: #ffffff;
+}
+
+.expand-container {
+    list-style-type: none;
+    padding: 0;
+}
+
+.expander {
+    border: 6px solid transparent;
+    content: ' ';
+    display: inline-block;
+    height: 0;
+    margin-left: -6px;
+    margin-top: -6px;
+    width: 0;
+    border-left-color: #ccc;
+}
+
+.expand-header {
+    padding: 10px;
+    border: 1px dashed #eee;
+}
+
+.expanded > .expand-header .expander {
+    border-top-color: #ccc;
+    border-left-color: transparent;
+}
+
+.expanded > .expand-content {
+    display: block;
+}
+
+.expand-content {
+    margin-left: 30px;
+    display: none;
+}
+
+td.type-textarea {
+    max-width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.table-bordered-round {
+    border: 1px solid #dee2e6;
+}
+
+.vlink {
+    color: #800080;
+}
