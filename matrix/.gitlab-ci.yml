@@ -1,0 +1,50 @@
+image: registry.dev.internal/shared/backend-build-image:master
+
+before_script:
+  - chmod +x ./gradlew
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+  - eval $(ssh-agent -s)
+  - bash -c 'ssh-add <(echo "$SSH_PRIVATE_KEY")'
+
+cache:
+  key: "$CI_COMMIT_REF_NAME"
+  paths:
+  - build/
+  - .gradle/wrapper
+  - .gradle/caches
+
+stages:
+- build
+- deploy
+
+build:
+  stage: build
+  script:
+  - ./gradlew assemble
+  artifacts:
+    paths:
+    - server/build/libs
+
+staging:
+  cache: {}
+  stage: deploy
+  environment:
+    name: staging
+    url: http://template.dev.internal
+  script:
+  - scp -o StrictHostKeyChecking=no server/build/libs/server-0.0.1-SNAPSHOT.jar template@192.168.10.236:~
+  - ssh -o StrictHostKeyChecking=no template@192.168.10.236 'docker-compose restart app'
+  only:
+  - staging
+
+master:
+  cache: {}
+  stage: deploy
+  environment:
+    name: production
+    url: https://template.project.internal
+  script:
+  - scp -o StrictHostKeyChecking=no server/build/libs/server-0.0.1-SNAPSHOT.jar template@192.168.10.235:~
+  - ssh -o StrictHostKeyChecking=no template@192.168.10.235 'docker-compose restart app'
+  only:
+  - master

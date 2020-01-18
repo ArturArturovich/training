@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" th:lang="${lang}" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<!--/*@thymesVar id="model" type="ru.offenso.entities.User"*/-->
+<!--/*@thymesVar id="roles" type="java.lang.Iterable<ru.offenso.entities.Role>"*/-->
+<!--/*@thymesVar id="action" type="java.lang.String"*/-->
+<!--/*@thymesVar id="lang" type="java.lang.String"*/-->
+
+<head>
+    <meta charset="utf-8"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <link rel="icon" th:href="@{/favicon.ico}"/>
+    <title th:text="#{brand}">#{brand}</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" media="all" rel="stylesheet" th:href="@{/webjars/bootstrap/dist/css/bootstrap.min.css}" type="text/css"/>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" th:href="@{/webjars/font-awesome/css/font-awesome.css}" type="text/css"/>
+    <link media="all" rel="stylesheet" th:href="@{/webjars/bootstrap-select/dist/css/bootstrap-select.min.css}" type="text/css"/>
+    <link href="../../../static/main.css" media="all" rel="stylesheet" th:href="@{/main.css}" type="text/css"/>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" th:src="@{/webjars/jquery/dist/jquery.min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" th:src="@{/webjars/popper.js/dist/umd/popper.js}"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/dist/js/bootstrap.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap-select/dist/js/bootstrap-select.min.js}"></script>
+    <script th:src="@{'/webjars/bootstrap-select/dist/js/i18n/defaults-'+ ${lang} + '_' + ${#strings.toUpperCase(lang)} + '.min.js'}"></script>
+</head>
+<body>
+<main role="main">
+    <div class="container-fluid">
+        <form method="post" role="form" th:action="${action}" th:fragment="form(action)">
+            <div class="form-group">
+                <label class="sr-only" for="user-username" th:text="#{user.username.label}">#{user.username.label}</label>
+                <input class="form-control" id="user-username" placeholder="#{user.username.placeholder}" required th:field="${model.username}" th:placeholder="#{user.username.placeholder}"
+                       type="text"/>
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="user-email" th:email="#{user.email.label}">#{user.email.label}</label>
+                <input class="form-control" id="user-email" placeholder="#{user.email.placeholder}" required th:field="${model.email}" th:placeholder="#{user.email.placeholder}" type="text"/>
+            </div>
+
+            <div class="form-group">
+                <label class="sr-only" for="user-new-password" th:text="#{user.newPassword.label}">#{user.newPassword.label}</label>
+                <input class="form-control" id="user-new-password" name="new-password" placeholder="#{user.newPassword.placeholder}" th:placeholder="#{user.newPassword.placeholder}" type="password"/>
+            </div>
+
+            <div class="form-group">
+                <label class="sr-only" for="user-repeat-password" th:text="#{user.repeatPassword.label}">#{user.repeatPassword.label}</label>
+                <input class="form-control" id="user-repeat-password" name="repeat-password" placeholder="#{user.repeatPassword.placeholder}" th:placeholder="#{user.repeatPassword.placeholder}"
+                       type="password"/>
+            </div>
+            <div class="checkbox">
+                <input id="user-enabled" th:field="${model.enabled}" type="checkbox"/>
+                <label for="user-enabled" th:text="#{user.enabled.label}">#{user.enabled.label}</label>
+            </div>
+            <div class="form-group">
+                <label for="user-roles" th:text="#{roles}">#{roles}</label>
+                <select class="form-control selectpicker" data-live-search="true" data-actions-box="true" id="user-roles" name="roles" multiple>
+                    <option th:each="it : ${roles}" th:selected="${model.roles.contains(it)}" th:text="${it.displayName}" th:value="${it.id}">${it.displayName}</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" th:text="#{save}" type="submit">#{save}</button>
+        </form>
+        <hr/>
+    </div> <!-- /container -->
+</main>
+</body>
+</html>
